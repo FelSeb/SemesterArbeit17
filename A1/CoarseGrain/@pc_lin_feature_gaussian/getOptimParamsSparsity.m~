@@ -20,7 +20,7 @@ for iteration = 1:Max_iter
     sum_suff_stat1_feat = zeros(1,M,n_training_samples);
     sum_phi_phi = zeros(M,M,n_training_samples);
     
-    
+    tic;
     for i = 1:n_training_samples % (possible in parallel but too much overhead)
         [x_i, y_i] = data_provider.provideDataPoint(i);
         feat_fun_x_i = this.Feature_functions(x_i);
@@ -30,7 +30,7 @@ for iteration = 1:Max_iter
         sum_phi_phi(:,:,i) = feat_fun_x_i' * feat_fun_x_i;
         
     end
-    
+    toc;
     sum_suff_stat2 = sum(sum_suff_stat2);
     sum_suff_stat1_feat = sum(sum_suff_stat1_feat,3);
     sum_phi_phi = sum(sum_phi_phi,3);
@@ -59,7 +59,7 @@ for iteration = 1:Max_iter
 
 %     % For testing purposes evaluate the lower bound: E_p(tau)[ Q(theata) ];
      V = diag((1./this.Coefficients).^2);
-     E_p_Q(iteration) = -0.5*M*log(sigma2_opt) - 0.5/sigma2_opt*sum_C - 0.5*theta_opt'*V*theta_opt
+     E_p_Q(iteration) = -0.5*M*log(sigma2_opt) - 0.5/sigma2_opt*sum_C - 0.5*theta_opt'*V*theta_opt;
     
     this.Coefficients = theta_opt;
 end

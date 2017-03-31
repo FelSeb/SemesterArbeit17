@@ -72,7 +72,7 @@ My_pc = pc_lin_feature_gaussian1(Fine_grid,Coarse_grid,c2f,FeatFun,init_var);
 My_pc = My_pc.initParameters;
 
 %% Data Generator
-n_data_points = 4; 
+n_data_points = 30; 
 tic;
 generator = DataGenerator(Fine_grid, fineSolver, 'Data1/Dataset32');
 N_batch = 1;

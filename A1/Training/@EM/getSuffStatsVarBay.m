@@ -82,7 +82,9 @@ parfor i = 1:this.N_training_samples % (in parallel)
     end
     susta4 =  susta4/N_MC_samples;
 
-    SuffStats(:,i) = {susta1; susta2; susta3; susta4};   
+    SuffStats(:,i) = {susta1'; susta2; susta3; susta4};   
+    
+    fprintf('SuffStat no %d completed. Total %d',i,this.N_training_samples)
 end
 toc;
 
