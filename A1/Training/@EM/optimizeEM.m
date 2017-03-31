@@ -1,0 +1,31 @@
+function [theta_pc, theta_pcf, this] = optimizeEM(this)
+
+if(this.PC.Direct_optim && this.PCF.Direct_optim)
+    
+    for iterateion = 1:this.Max_iter
+        % E-step (Provide lower bound function. In the first example this 
+        % is equivalent to computing the sufficient satistics)
+        
+        %%%%%%%%%%%%%%%%%%%%%% MCMC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % SuffStats = this.getSuffStats();
+        %%%%%%%%%%%%%%%%%%%%%% Variational Bayes %%%%%%%%%%%%%%%%%%%%%%%%%%
+        SuffStats = this.getSuffStatsVarBay();
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        % M-step (Optimization of lower bound)
+        this.PC = this.PC.getOptimParams(SuffStats, this.Data_provider, this.N_training_samples);
+        this.PCF = this.PCF.getOptimParams(SuffStats, this.Data_provider, this.N_training_samples); 
+        
+        
+    end
+      
+else
+    error('Whaat?')
+end
+
+
+theta_pc = 'whatever_pc';
+theta_pcf = 'whatever_pcf';
+
+
+end

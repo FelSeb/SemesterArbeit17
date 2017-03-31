@@ -1,0 +1,63 @@
+classdef pcf_lin_gaussian < pcf
+    
+    % y = mu + W * Y + z; z ~ N(0,S)
+    
+    properties
+        % Linear transformation matrix for fast mapping from coarse to
+        % fine. It is of dimension (dim_fine x dim_coarse).
+        Interpolation_matrix;
+        
+        % Offset-vector
+        Offset;
+        
+        % Covariance matrix and it
+        Cov_matrix;
+        
+        % 
+    end
+    
+    methods
+        % Constructor
+        function this = pcf_lin_gaussian(fg,cg)
+            % Constructor of super class
+            this@pcf(fg, cg);
+            
+            % Compute Intetpolation matrix:
+            this = this.getInterpMat();
+            
+            % Set the default offset
+            this.Offset = zeros(numel(fg),1);
+            
+        end
+        
+        % Compute Intetpolation matrix
+        this = getInterpMat(this);
+        
+        
+        % Bilinear interpolation for refinement:
+        fine_field = bilinQuadRefine(this, coarse_field )
+        
+        % Overriede method:
+        function fine_field = coarse2fine(this, coarse_field)
+            fine_field = this.bilinQuadRefine(coarse_field);
+        end
+        
+        
+        % Evaluate PDF or log PDF
+        [pdf_val] = evalGaussianPDF(this, y, eval_log)
+        
+        % Override Method: Evaluate PDF
+        function pdf_val = evalPDF(this, y)
+            pdf_val = this.evalGaussianPDF(y,0);
+        end
+        
+        % Override Method: Evaluate log PDF
+        function log_pdf_val = evalLogPDF(this, y)
+            log_pdf_val = this.evalGaussianPDF(y,1);
+        end
+        
+        
+    end
+    
+end
+
