@@ -4,7 +4,7 @@ function [ output_args ] = gittest( input_args )
 
 'Das ist eine Ver?nderung!!!'
 'Das ist noch eine'
-
+'Number 3'
 
 end
 
