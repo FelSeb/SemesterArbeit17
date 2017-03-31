@@ -3,6 +3,7 @@ function [ output_args ] = gittest( input_args )
 %   Detailed explanation goes here
 
 'Das ist eine Ver?nderung!!!'
+'Das ist noch eine'
 
 
 end
