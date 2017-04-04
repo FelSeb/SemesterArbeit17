@@ -110,11 +110,8 @@ classdef pcf_lin_gaussian < pcf
                 this.S = varargin{1};
                 this.Offset = varargin{2};
             else
-                % All equations corresponding to nondir nodes
-                nondir = this.Fine_grid.Node2eq(this.Fine_grid.All_nondir_nodes);
-                
-                this.S = eye(numel(nondir)) * this.Init_var;
-                this.Offset = zeros(numel(nondir),1);
+                this.S = eye(numel(this.)) * this.Init_var;
+                this.Offset = zeros(this.Fine_grid.N_node,1);
             end
             
             this = this.getInterpMat;

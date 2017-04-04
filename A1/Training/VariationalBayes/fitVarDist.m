@@ -18,6 +18,7 @@ standard_cov = eye(N_dim);
 % Good settings for full gaussian: N_maxiter = ca.500; N_maxmc_sample = 10,
 % eta = 0.1; (Not better in terms of ELBO value)
 
+
 N_maxiter = 800;
 N_maxmc_sample = 1;
 

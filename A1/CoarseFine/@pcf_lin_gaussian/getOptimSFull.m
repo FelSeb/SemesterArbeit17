@@ -7,13 +7,17 @@ warning('this functions needs to be checked extensively')
 
 optim_S = 0;
 
+% All equations corresponding to nondir nodes
+nondir = this.Fine_grid.Node2eq(this.Fine_grid.All_nondir_nodes);
+
+
 for i = 1:n_training_samples
     [x_i, y_i] = data_provider.provideDataPoint(i);
     % Compute W * <Y(X_i)>
-    WY = this.Interp_matrix * suff_stats{3,i};
+    WY = this.Interp_matrix(nondir,:) * suff_stats{3,i};
     
     % Compute (y_i' - mu')
-    y_i_min_mu = yi - this.Offset;
+    y_i_min_mu = yi(nondir) - this.Offset;
     
     % Compute (y_i' - mu' - <Y(X_i)>'*W')
     term1 = y_i_min_mu' - WY';
@@ -22,7 +26,7 @@ for i = 1:n_training_samples
     optim_S = optim_S ...
         + y_i_min_mu * term1...
         - WY * y_i_min_mu'...
-        + this.this.Interp_matrix * suff_stats{4,i} * this.this.Interp_matrix';
+        + this.Interp_matrix(nondir,:) * suff_stats{4,i} * this.this.Interp_matrix(nondir,:)';
     
 end
 

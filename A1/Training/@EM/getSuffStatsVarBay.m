@@ -4,7 +4,8 @@ function [ SuffStats ] = getSuffStatsVarBay( this )
 % This for loop may be parallelized!!!
 SuffStats = cell(4,this.N_training_samples);
 tic;
-parfor i = 1:this.N_training_samples % (in parallel)
+
+parfor i = 1:this.N_training_samples % (in parallel!!!)
     % set training data x and y of current batch
     [x_i, y_i] = this.Data_provider.provideDataPoint(i);
     
@@ -40,7 +41,7 @@ parfor i = 1:this.N_training_samples % (in parallel)
     varDist = fitVarDist(LOGPDF, varDist);
     
     % Generate X samples
-    N_MC_samples = 1000;
+    N_MC_samples = 200; %100-200
     X_samples = varDist.generateSamples(N_MC_samples);
     
     % Generate Y samples
@@ -50,23 +51,23 @@ parfor i = 1:this.N_training_samples % (in parallel)
     end
     
     %%%%%%%%%% Visualtization of target and fitted distribution%%%%%%%%%%%%
-    %     Sigma = varDist.Sigma_chol * varDist.Sigma_chol;
-    %     F_gaussian = @(X) testTarget(X',varDist.Phi_mu,Sigma);
-    %     plot1DDistribution(F_gaussian,varDist.Phi_mu);
-    %     title('approx')
-    %
-    %     F_target = @(X) LOGPDF(X);
-    %     plot1DDistribution(F_target,varDist.Phi_mu);
-    %     title('ref')
+%     Sigma = varDist.Sigma_chol * varDist.Sigma_chol;
+%     F_gaussian = @(X) testTarget(X',varDist.Phi_mu,Sigma);
+%     plot1DDistribution(F_gaussian,varDist.Phi_mu);
+%     title('approx')
+%     
+%     F_target = @(X) LOGPDF(X);
+%     plot1DDistribution(F_target,varDist.Phi_mu);
+%     title('ref')
     %%%%%%%%%%%%%%%%%%%%%% Test target distribuiton%%%%%%%%%%%%%%%%%%%%%%%%
-    %     LOGPDF = @(X) testTarget(X, [0,0,0,0], eye(4));
-    %     phi_mu_init = [3,3,3,3];
-    %     Sigma_diag_init = [3,3,3,3];
-    %     phi_L_init = log(Sigma_diag_init)/2;
-    %
-    %     varDist = varDistGaussian(phi_mu_init, phi_L_init);
-    %
-    %     varDist = fitVarDist(LOGPDF, varDist);
+%     LOGPDF = @(X) testTarget(X, [0,0,0,0], eye(4));
+%     phi_mu_init = [3,3,3,3];
+%     Sigma_diag_init = [3,3,3,3];
+%     phi_L_init = log(Sigma_diag_init)/2;
+%     
+%     varDist = varDistGaussian(phi_mu_init, phi_L_init);
+%     
+%     varDist = fitVarDist(LOGPDF, varDist);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     susta1 = varDist.Phi_mu;
     susta2 = 0;
@@ -82,9 +83,9 @@ parfor i = 1:this.N_training_samples % (in parallel)
     end
     susta4 =  susta4/N_MC_samples;
 
-    SuffStats(:,i) = {susta1'; susta2; susta3; susta4};   
+    SuffStats(:,i) = {susta1'; susta2; susta3'; susta4};   
     
-    fprintf('SuffStat no %d completed. Total %d',i,this.N_training_samples)
+    fprintf('SuffStat no %d completed. Total %d \n',i,this.N_training_samples)
 end
 toc;
 

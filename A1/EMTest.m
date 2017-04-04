@@ -1,6 +1,6 @@
 clear all;
 close all;
-%clc;
+clc;
 
 addpath('CoarseFine')
 addpath('CoarseGrain')
@@ -20,7 +20,7 @@ addpath('Training/VariationalBayes')
 
 warning('use genpath funciton here!!!')
 %% Set parallel computing options
-run_parallel = 1;
+run_parallel = 0;
 if(numel(gcp('nocreate')) ==0 && run_parallel)
     nworkers = 4;
     parpool(4);
@@ -73,12 +73,12 @@ My_pc = My_pc.initParameters;
 
 %% Data Generator
 n_data_points = 30; 
-tic;
-generator = DataGenerator(Fine_grid, fineSolver, 'Data1/Dataset32');
-N_batch = 1;
-generator.generate(n_data_points,N_batch);
-fprintf('Data generation complete\n');
-toc;
+% tic;
+% generator = DataGenerator(Fine_grid, fineSolver, 'Data1/Dataset32');
+% N_batch = 1;
+% generator.generate(n_data_points,N_batch);
+% fprintf('Data generation complete\n');
+% toc;
 
 %% Data Provider
 provider = DataProvider('Data1/Dataset32');
@@ -90,7 +90,7 @@ provider = DataProvider('Data1/Dataset32');
 %     Fine_grid.plotSol(PostSol, 0);
 % end
 
-%% mhMCMC
+%% mhMCMC (sollte eigentlich an PC Klasse uebergeben werden)
 prop_var = 0.6;
 My_proposer = MALAProp(prop_var);
 % prop_var = 5e-1;

@@ -11,6 +11,7 @@ if(this.PC.Direct_optim && this.PCF.Direct_optim)
         %%%%%%%%%%%%%%%%%%%%%% Variational Bayes %%%%%%%%%%%%%%%%%%%%%%%%%%
         SuffStats = this.getSuffStatsVarBay();
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
         
         % M-step (Optimization of lower bound)
         this.PC = this.PC.getOptimParams(SuffStats, this.Data_provider, this.N_training_samples);

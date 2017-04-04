@@ -8,6 +8,9 @@ else
     compute_log_grad = 0;
 end
 
+% All equations corresponding to nondir nodes
+nondir_fine = this.Fine_grid.Node2eq(this.Fine_grid.All_nondir_nodes);
+
 k = length(y);
 
 % Evaluate coarse model
@@ -18,7 +21,7 @@ k = length(y);
 
 % This guarantees postivity of the exponent
 % Note: a'inv(S)a = a'inv(R'R)a = a'inv(R)inv(R')a = Rit_a' * Rit_a
-vec = (y - this.Offset - this.Interpolation_matrix * Y);
+vec = (y(nondir_fine) - this.Offset - this.Interpolation_matrix(nondir_fine,:) * Y);
 Rit_a = this.S_chol'\vec;
 
 if(~eval_log)
@@ -38,7 +41,7 @@ else
     
     % Computation gradient of the log PDF w.r.t. material parameters
     if(compute_log_grad)
-        dval = getPCFGrad(this, Y, y);
+        dval = getPCFGrad(this, Y, y, nondir_fine);
     end
     
 end
@@ -46,15 +49,16 @@ end
 end
 
 
-function dval = getPCFGrad(pcf, u, y)
+function dval = getPCFGrad(pcf, u, y, nondir_fine)
 % All equations corresponding to nondir nodes
-nondir = pcf.Coarse_grid.Node2eq(pcf.Coarse_grid.All_nondir_nodes);
+nondir_coarse = pcf.Coarse_grid.Node2eq(pcf.Coarse_grid.All_nondir_nodes);
 
 % Computation of lambda_prefac from the adjoint method (efficient method
 % for the computation of the gradient of pcf).
-WtSinv = (pcf.S_chol\(pcf.S_chol'\pcf.Interpolation_matrix(:,nondir)))';
+
+WtSinv = (pcf.S_chol\(pcf.S_chol'\pcf.Interpolation_matrix(nondir_fine,nondir_coarse)))';
 %WtSinv = (S\W)';
-lambda_prefac = pcf.Solver.C'\ (WtSinv * (y - pcf.Offset - pcf.Interpolation_matrix(:,nondir)*u(nondir)) );
+lambda_prefac = pcf.Solver.C'\ (WtSinv * (y(nondir_fine) - pcf.Offset - pcf.Interpolation_matrix(nondir_fine,nondir_coarse)*u(nondir_coarse)) );
 
 Nx = numel(pcf.Solver.C_grad);
 syssize = size(pcf.Solver.C_grad{1},1);
@@ -63,7 +67,7 @@ C_gradu = zeros(syssize,Nx);
 
 % Should be fast since each C_grad{i} has only 8 non-zero entries
 for ix = 1:Nx
-    C_gradu(:,ix) = pcf.Solver.C_grad{ix} * u(nondir);
+    C_gradu(:,ix) = pcf.Solver.C_grad{ix} * u(nondir_coarse);
 end
 
 dval = - lambda_prefac' * (C_gradu - pcf.Solver.Rhs_grad);
